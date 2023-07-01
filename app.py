@@ -1,4 +1,4 @@
-from flask import Flask 
+from flask import Flask, render_template, redirect, request, session
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
@@ -7,6 +7,28 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tradingApp.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
 
 db = SQLAlchemy(app)
+
+@app.after_request
+def after_request(response):
+    """Ensure responses aren't cached"""
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Expires"] = 0
+    response.headers["Pragma"] = "no-cache"
+    return response
+
+@app.route("/")
+def index(): 
+    return render_template("index.html")
+
+@app.route("/buy", methods=["GET","POST"])
+def buy (): 
+    if request.method == "POST": 
+        symbol = request.form.get("symbol")
+        shares = request.form.get("shares")
+        return symbol
+        # will finish later
+    else: 
+        return render_template("buy.html")
 
 # User model
 class User(db.Model):
@@ -37,6 +59,11 @@ class Transaction_History(db.Model):
     shares = db.Column(db.Float, nullable=False)
     time = db.Column(db.DateTime, nullable=False)
 
+# run in terminal to initalize database: 
 # >>> from app import app, db
 # >>> app.app_context().push()
 # >>> db.create_all()
+
+
+if __name__ == '__main__':
+    app.run(debug=True)

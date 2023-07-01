@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Buy Stock
+{% endblock %}
+
+{% block body %}
+    <form action="/buy" method="post">
+        <input autocomplete="off" name="symbol" placeholder="Symbol" type="text" required >
+        <input autocomplete="off" name="shares" placeholder="Shares" type="number" min="0" required>
+        <button type="submit">Submit</button>
+    </form>
+
+{% endblock %}
