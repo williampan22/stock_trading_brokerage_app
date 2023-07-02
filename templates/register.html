@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Register
+{% endblock %}
+
+{% block body %}
+    <form action="/register" method="post">
+        <input autocomplete="off" name="username" placeholder="Username" type="text" required >
+        <input autocomplete="off" name="password" placeholder="Password" type="text" required >
+        <input autocomplete="off" name="confirm_password" placeholder="Confirm Password" type="text" required >
+        <button type="submit">Log In</button>
+    </form>
+
+{% endblock %}

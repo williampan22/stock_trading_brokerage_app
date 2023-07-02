@@ -8,13 +8,12 @@ ticker = "AAPL"
 load_dotenv() 
 API_KEY = os.getenv('API_KEY') 
 
-def main(): 
-    print(get_stock_quote(ticker, API_KEY))
+# def main(): 
+#     print(get_stock_quote(ticker, API_KEY))
 
-def get_stock_quote(ticker_symbol, API_KEY):
+# returns info for one stock in a dictionary
+def quote_stock(ticker_symbol, API_KEY):
     url = f"https://api.twelvedata.com/quote?symbol={ticker_symbol}&apikey={API_KEY}"
-    response =  requests.get(url).json()
-    return response
+    stock_data =  requests.get(url).json() 
+    return stock_data
     
-
-main()

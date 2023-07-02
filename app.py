@@ -1,20 +1,66 @@
+import os
 from flask import Flask, render_template, redirect, request, session
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+from dotenv import load_dotenv
+from werkzeug.security import check_password_hash, generate_password_hash
+
+from stock_functions import quote_stock
+
+load_dotenv() 
+API_KEY = os.getenv('API_KEY') 
 
 app = Flask(__name__)
+
+# basedir = os.path.abspath(os.path.dirname("trading_brokerage_app/app.py"))
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'tradingApp.db')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tradingApp.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True 
 
 db = SQLAlchemy(app)
 
 @app.after_request
 def after_request(response):
-    """Ensure responses aren't cached"""
     response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
     response.headers["Expires"] = 0
     response.headers["Pragma"] = "no-cache"
     return response
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST": 
+        username = request.form.get("username")
+        password = request.form.get("password")
+        confirm_password = request.form.get("confirm_password")
+        if (not username or not password or not confirm_password): 
+            print("1")
+            return redirect("/register"), 400
+        if password != confirm_password: 
+            print("2")
+            return redirect("/register"), 400
+        # reminder - check if username is in database
+        hash_password = generate_password_hash(password)    
+        user = User(username=username, hash_password=hash_password, cash=0)
+        db.session.add(user)
+        db.session.commit()
+        return redirect("/login")
+    else: 
+        return render_template("register.html")
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    # session.clear() 
+    if request.method == "POST": 
+        username = request.form.get("username")
+        password = request.form.get("password")
+        if not username or not password: 
+            return redirect("/login"), 400
+        
+    else: 
+        return render_template("login.html")
+    
+
+
 
 @app.route("/")
 def index(): 
@@ -24,8 +70,16 @@ def index():
 def buy (): 
     if request.method == "POST": 
         symbol = request.form.get("symbol")
-        shares = request.form.get("shares")
-        return symbol
+        shares = int(request.form.get("shares"))
+        quote = quote_stock(symbol, API_KEY)
+        if not quote: 
+            return redirect("/buy"), 400
+        symbol = quote["symbol"]
+        name = quote["name"]
+        current_price = quote["close"]
+        total_value = current_price * shares
+        return quote
+
         # will finish later
     else: 
         return render_template("buy.html")
@@ -63,7 +117,6 @@ class Transaction_History(db.Model):
 # >>> from app import app, db
 # >>> app.app_context().push()
 # >>> db.create_all()
-
 
 if __name__ == '__main__':
     app.run(debug=True)
