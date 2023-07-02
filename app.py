@@ -1,11 +1,13 @@
 import os
 from flask import Flask, render_template, redirect, request, session
+from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from dotenv import load_dotenv
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from stock_functions import quote_stock
+from login import require_login
 
 load_dotenv() 
 API_KEY = os.getenv('API_KEY') 
@@ -15,7 +17,10 @@ app = Flask(__name__)
 # basedir = os.path.abspath(os.path.dirname("trading_brokerage_app/app.py"))
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'tradingApp.db')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tradingApp.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True 
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+Session(app)
 
 db = SQLAlchemy(app)
 
@@ -33,12 +38,12 @@ def register():
         password = request.form.get("password")
         confirm_password = request.form.get("confirm_password")
         if (not username or not password or not confirm_password): 
-            print("1")
             return redirect("/register"), 400
         if password != confirm_password: 
-            print("2")
             return redirect("/register"), 400
-        # reminder - check if username is in database
+        user = User.query.filter_by(username=username).first()
+        if user: 
+            return redirect("/register"), 400
         hash_password = generate_password_hash(password)    
         user = User(username=username, hash_password=hash_password, cash=0)
         db.session.add(user)
@@ -49,19 +54,29 @@ def register():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    # session.clear() 
+
+    session.clear() 
+
     if request.method == "POST": 
         username = request.form.get("username")
         password = request.form.get("password")
         if not username or not password: 
-            return redirect("/login"), 400
-        
+            return redirect("/login"), 403
+        user = User.query.filter_by(username=username).first_or_404()
+        if not check_password_hash(user.hash_password, password): 
+            return redirect("/login"), 403
+        session["user_id"] = user.id
+        return redirect("/")
     else: 
         return render_template("login.html")
     
+@app.route("/logout")
+def logout():
 
+    session.clear()
+    return redirect("/login")
 
-
+@require_login
 @app.route("/")
 def index(): 
     return render_template("index.html")
