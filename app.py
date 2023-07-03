@@ -92,17 +92,18 @@ def login():
 
 # Log user out
 @app.route("/logout")
+@require_login
 def logout():
     session.clear()
     return redirect("/login")
 
-@require_login
 @app.route("/")
+@require_login
 def index(): 
     return render_template("index.html")
 
-@require_login
 @app.route("/deposit")
+@require_login
 def depsoit(): 
     cash_to_deposit = request.form.get("cash_to_deposit")
     user = db.session.execute(db.select(User).filter_by(username=session["user_id"])).scalar_one_or_none()
@@ -113,6 +114,7 @@ def depsoit():
     return render_template("deposit.html")
 
 @app.route("/buy", methods=["GET","POST"])
+@require_login
 def buy(): 
     if request.method == "POST": 
         symbol = request.form.get("symbol")
