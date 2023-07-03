@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 from flask import Flask, render_template, redirect, request, session
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
@@ -22,6 +23,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tradingApp.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
+# app.permanent_session_lifetime = None
 Session(app)
 
 # Connect database
@@ -97,48 +99,60 @@ def logout():
     session.clear()
     return redirect("/login")
 
+@app.route('/clear_session')
+def clear_session():
+    session.clear()
+
 @app.route("/")
 @require_login
 def index(): 
-    return render_template("index.html")
+    portfolio = db.session.execute(db.select(Portfolio).filter_by(user_id=session["user_id"])).scalars()
+    return render_template("index.html", portfolio=portfolio)
 
-@app.route("/deposit")
+@app.route("/trade_history")
+@require_login
+def trade_history(): 
+    trade_history = db.session.execute(db.select(Trade_History).filter_by(user_id=session["user_id"])).scalars()
+    return render_template("trade_history.html", trade_history=trade_history)
+
+@app.route("/deposit", methods=["GET","POST"])
 @require_login
 def depsoit(): 
-    cash_to_deposit = request.form.get("cash_to_deposit")
-    user = db.session.execute(db.select(User).filter_by(username=session["user_id"])).scalar_one_or_none()
-    currnet_cash = user.cash
-    new_cash = currnet_cash + cash_to_deposit
-    user.cash = new_cash
-    db.session_commit()
-    return render_template("deposit.html")
+    if request.method == "POST": 
+        cash_to_deposit = request.form.get("cash_to_deposit")
+        user = db.session.execute(db.select(User).filter_by(id=session["user_id"])).scalar_one_or_none()
+        current_cash = user.cash
+        new_cash = current_cash + float(cash_to_deposit)
+        user.cash = new_cash
+        db.session.commit()
+        return redirect("/")
+    else: 
+        return render_template("deposit.html")
 
 @app.route("/buy", methods=["GET","POST"])
 @require_login
 def buy(): 
     if request.method == "POST": 
         symbol = request.form.get("symbol")
-        shares_string = request.form.get("shares")
+        shares = int(request.form.get("shares"))
         quote = quote_stock(symbol, API_KEY)
         if not quote: 
             return redirect("/buy"), 400
-        try:
-            shares_int = int(shares_string)
-            shares = shares_int
-        except ValueError:
-            print("The string is not an integer.")
+        symbol = quote["symbol"]
+        name = quote["name"]
+        current_price = round(float(quote["close"]), 2)
+        total_cost = round(current_price * shares, 2)
+        user = db.one_or_404(db.select(User).filter_by(id=session["user_id"]))
+        current_cash = user.cash
+        if current_cash < total_cost:
             return redirect("/buy"), 400
-        # symbol = quote["symbol"]
-        # name = quote["name"]
-        # current_price = quote["close"]
-        # total_cost = current_price * shares
-        # user = db.one_or_404(db.select(User).filter_by(username=session["user_id"]))
-        # currnet_cash = user.cash
-        # if currnet_cash < total_cost:
-        #     return redirect("/buy"), 400
-        # new_cash = currnet_cash - total_cost
-        # user.cash = new_cash
-        # db.session.commit()
+        new_cash = current_cash - total_cost
+        user.cash = new_cash
+        portfolio_trade = Portfolio(user_id=session["user_id"], symbol=symbol, name=name, shares=shares, avg_buy_price=current_price, total_value=total_cost)
+        trade_history_trade = Trade_History(user_id=session["user_id"], order_type="BUY", order_price=current_price, symbol=symbol, shares=shares, total_value=total_cost, time=datetime.now())
+        db.session.add(portfolio_trade)
+        db.session.add(trade_history_trade)
+        db.session.commit()
         return redirect("/")
 
         # will finish later
@@ -161,17 +175,16 @@ class Portfolio(db.Model):
     shares = db.Column(db.Integer, nullable=False)
     avg_buy_price = db.Column(db.Float, nullable=False)
     total_value = db.Column(db.Float, nullable=False)
-    total_gain = db.Column(db.Float, nullable=False)
-    total_gain_percent = db.Column(db.Float, nullable=False)
-
+    
 # History model
-class Transaction_History(db.Model):
+class Trade_History(db.Model):
     transaction_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     order_type = db.Column(db.String(10), nullable=False)
-    order_price = db.Column(db.Float, nullable=False)
     symbol = db.Column(db.String(10), nullable=False)
     shares = db.Column(db.Float, nullable=False)
+    order_price = db.Column(db.Float, nullable=False)
+    total_value = db.Column(db.Float, nullable=False)
     time = db.Column(db.DateTime, nullable=False)
 
 # run in terminal to initalize database: 

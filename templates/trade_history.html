@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-    Portfolio
+    Trade History
 {% endblock %}
 
 {% block body %}
@@ -11,25 +11,27 @@
 <a href="/deposit">Deposit</a>
 
 
-<h3>Portfolio</h3>
+<h3>Trade History</h3>
 <table>
     <thead>
         <tr>
+            <th>Order Type</th>
             <th>Symbol</th>
-            <th>Share</th>
             <th>Shares</th>
-            <th>Average Buy Price</th>
+            <th>Order Price</th>
             <th>Total Value</th>
+            <th>Time</th>
         </tr>
     </thead>
     <tbody>
-        {% for row in portfolio %}
+        {% for row in trade_history %}
         <tr>
+            <td>{{row.order_type}}</td>
             <td>{{row.symbol}}</td>
-            <td>{{row.name}}</td>
             <td>{{row.shares}}</td>
-            <td>{{row.avg_buy_price}}</td>
+            <td>{{row.order_price}}</td>
             <td>{{row.total_value}}</td>
+            <td>{{row.time}}</td>
         </tr>
         {% endfor %}
     </tbody>

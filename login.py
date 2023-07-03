@@ -5,7 +5,8 @@ from flask import Flask, render_template, redirect, request, session
 def require_login(function):
     @wraps(function)
     def decorated_function(*args, **kwargs):
-        if not session.get("user_id"):
+        if session.get("user_id") is None:
             return redirect("/login")
+        print("session", session.get("user_id"))
         return function(*args, **kwargs)
     return decorated_function
