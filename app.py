@@ -49,7 +49,7 @@ def register():
         if password != confirm_password: 
             return redirect("/register"), 400
         # If username already exists return error
-        user = User.query.filter_by(username=username).first()
+        user = db.session.execute(db.select(User).filter_by(username=username)).scalar_one_or_none()
         if user: 
             return redirect("/register"), 400
         # Hash password for privacy
@@ -77,7 +77,7 @@ def login():
         if not username or not password: 
             return redirect("/login"), 403
         # SELECT username from database and return error if password does not match 
-        user = User.query.filter_by(username=username).first_or_404()
+        user = db.session.execute(db.select(User).filter_by(username=username)).scalar_one_or_none()
         if not check_password_hash(user.hash_password, password): 
             return redirect("/login"), 403
         # Log user in with session_id
@@ -97,19 +97,43 @@ def logout():
 def index(): 
     return render_template("index.html")
 
+@require_login
+@app.route("/deposit")
+def depsoit(): 
+    cash_to_deposit = request.form.get("cash_to_deposit")
+    user = db.session.execute(db.select(User).filter_by(username=session["user_id"])).scalar_one()
+    currnet_cash = user.cash
+    new_cash = currnet_cash + cash_to_deposit
+    user.cash = new_cash
+    db.session_commit()
+    return render_template("deposit.html")
+
 @app.route("/buy", methods=["GET","POST"])
-def buy (): 
+def buy(): 
     if request.method == "POST": 
         symbol = request.form.get("symbol")
-        shares = int(request.form.get("shares"))
+        shares_string = request.form.get("shares")
         quote = quote_stock(symbol, API_KEY)
         if not quote: 
             return redirect("/buy"), 400
-        symbol = quote["symbol"]
-        name = quote["name"]
-        current_price = quote["close"]
-        total_value = current_price * shares
-        return quote
+        try:
+            shares_int = int(shares_string)
+            shares = shares_int
+        except ValueError:
+            print("The string is not an integer.")
+            return redirect("/buy"), 400
+        # symbol = quote["symbol"]
+        # name = quote["name"]
+        # current_price = quote["close"]
+        # total_cost = current_price * shares
+        # user = db.one_or_404(db.select(User).filter_by(username=session["user_id"]))
+        # currnet_cash = user.cash
+        # if currnet_cash < total_cost:
+        #     return redirect("/buy"), 400
+        # new_cash = currnet_cash - total_cost
+        # user.cash = new_cash
+        # db.session.commit()
+        return redirect("/")
 
         # will finish later
     else: 

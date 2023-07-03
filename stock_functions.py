@@ -2,8 +2,6 @@ import os
 import requests
 from dotenv import load_dotenv
 
-ticker = "AAPL"
-
 # load os to get secret api_key from .env protected by .gitignore
 load_dotenv() 
 API_KEY = os.getenv('API_KEY') 
