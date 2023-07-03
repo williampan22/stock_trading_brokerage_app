@@ -12,10 +12,12 @@ from login import require_login
 # Hides secret api key 
 load_dotenv() 
 API_KEY = os.getenv('API_KEY') 
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # Starts and initiates flask app + session
 # Flask session is set to file-system instead of on server with cookies - easier to handle on local development
 app = Flask(__name__)
+app.config['SECRET_KEY'] = SECRET_KEY
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tradingApp.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
 app.config["SESSION_PERMANENT"] = False
@@ -78,6 +80,8 @@ def login():
             return redirect("/login"), 403
         # SELECT username from database and return error if password does not match 
         user = db.session.execute(db.select(User).filter_by(username=username)).scalar_one_or_none()
+        if not user: 
+            return redirect("/login"), 404
         if not check_password_hash(user.hash_password, password): 
             return redirect("/login"), 403
         # Log user in with session_id
@@ -101,7 +105,7 @@ def index():
 @app.route("/deposit")
 def depsoit(): 
     cash_to_deposit = request.form.get("cash_to_deposit")
-    user = db.session.execute(db.select(User).filter_by(username=session["user_id"])).scalar_one()
+    user = db.session.execute(db.select(User).filter_by(username=session["user_id"])).scalar_one_or_none()
     currnet_cash = user.cash
     new_cash = currnet_cash + cash_to_deposit
     user.cash = new_cash
