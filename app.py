@@ -154,11 +154,44 @@ def buy():
         db.session.add(trade_history_trade)
         db.session.commit()
         return redirect("/")
-
-        # will finish later
     else: 
         return render_template("buy.html")
 
+@app.route("/sell", methods=["GET","POST"])
+@require_login
+def sell(): 
+    if request.method == "POST": 
+        symbol_to_sell = request.form.get("symbol").upper()
+        shares_to_sell = int(request.form.get("shares"))
+        stock_to_sell = db.session.execute(db.select(Portfolio).filter_by(user_id=session["user_id"], symbol=symbol_to_sell)).scalar_one_or_none()
+        if not stock_to_sell: 
+            return redirect("/sell"), 400
+        shares_owned = stock_to_sell.shares
+        if shares_to_sell > shares_owned or shares_to_sell < 0: 
+            return redirect("/sell"), 400
+        shares_left = shares_owned - shares_to_sell 
+        if shares_left > 0: 
+            stock_to_sell.shares = shares_left
+        elif shares_left == 0: 
+            db.session.delete(stock_to_sell)
+        quote = quote_stock(symbol_to_sell, API_KEY)
+        if not quote: 
+            return redirect("/buy"), 400
+        symbol = quote["symbol"]
+        name = quote["name"]
+        current_price = round(float(quote["close"]), 2)
+        total_value = round(current_price * shares_to_sell, 2)
+        user = db.one_or_404(db.select(User).filter_by(id=session["user_id"]))
+        current_cash = user.cash
+        new_cash = current_cash + total_value
+        user.cash = new_cash 
+        trade_history_trade = Trade_History(user_id=session["user_id"], order_type="SELL", order_price=current_price, symbol=symbol, shares=shares_to_sell, total_value=total_value, time=datetime.now())
+        db.session.add(trade_history_trade)
+        db.session.commit()
+        return redirect("/")
+    else: 
+        portfolio = db.session.execute(db.select(Portfolio).filter_by(user_id=session["user_id"])).scalars()
+        return render_template("sell.html", portfolio=portfolio)
 # User model
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
