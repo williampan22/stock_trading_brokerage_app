@@ -148,9 +148,17 @@ def buy():
             return redirect("/buy"), 400
         new_cash = current_cash - total_cost
         user.cash = new_cash
-        portfolio_trade = Portfolio(user_id=session["user_id"], symbol=symbol, name=name, shares=shares, avg_buy_price=current_price, total_value=total_cost)
+        is_stock_already_owned = db.session.execute(db.select(Portfolio).filter_by(user_id=session["user_id"], symbol=symbol)).scalar_one_or_none()
+        if not is_stock_already_owned:
+            portfolio_trade = Portfolio(user_id=session["user_id"], symbol=symbol, name=name, shares=shares, avg_buy_price=current_price, total_value=total_cost)
+            db.session.add(portfolio_trade)
+        else: 
+            current_shares = is_stock_already_owned.shares
+            new_shares = current_shares + shares
+            new_value = new_shares * current_price
+            is_stock_already_owned.shares = new_shares
+            is_stock_already_owned.total_value = new_value 
         trade_history_trade = Trade_History(user_id=session["user_id"], order_type="BUY", order_price=current_price, symbol=symbol, shares=shares, total_value=total_cost, time=datetime.now())
-        db.session.add(portfolio_trade)
         db.session.add(trade_history_trade)
         db.session.commit()
         return redirect("/")
