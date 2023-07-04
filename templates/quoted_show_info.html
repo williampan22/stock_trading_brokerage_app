@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Stock Info
+{% endblock %}
+
+{% block body %}
+    
+    <p>Name: {{quote.name}}</p>
+    <p>Symbol: {{quote.symbol}}</p>
+    <p>Symbol: {{quote.symbol}}</p>
+    <p>Exchange: {{quote.exchange}}</p>
+    <p>Open: {{ quote.open}}</p>
+    <p>High: {{quote.high}}</p>
+    <p>Low: {{quote.low}}</p>
+    <p>Close: {{quote.close}}</p>
+    <p>Volume: {{quote.volume}}</p>
+    <p>Average Volume: {{quote.average_volume}}</p>
+    <p>Previous Close: {{quote.previous_close}}</p>
+    <p>Percent Change: {{quote.percent_change}}</p>
+    <p>52 Week Low: {{quote.fifty_two_week["low"]}}</p>
+    <p>52 Week High: {{quote.fifty_two_week["high"]}}</p>
+
+
+
+{% endblock %}

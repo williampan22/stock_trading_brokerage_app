@@ -128,6 +128,16 @@ def depsoit():
         return redirect("/")
     else: 
         return render_template("deposit.html")
+    
+@app.route("/quote", methods=["GET", "POST"])
+@require_login
+def quote():
+    if request.method == "POST":
+        symbol = request.form.get("symbol")
+        quote = quote_stock(symbol, API_KEY)
+        return render_template("quoted_show_info.html", quote=quote)
+    else:
+        return render_template("quote.html")
 
 @app.route("/buy", methods=["GET","POST"])
 @require_login

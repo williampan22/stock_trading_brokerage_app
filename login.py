@@ -7,6 +7,5 @@ def require_login(function):
     def decorated_function(*args, **kwargs):
         if session.get("user_id") is None:
             return redirect("/login")
-        print("session", session.get("user_id"))
         return function(*args, **kwargs)
     return decorated_function
