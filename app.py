@@ -99,22 +99,26 @@ def logout():
     session.clear()
     return redirect("/login")
 
+# Clear Flask User Session after close browser
 @app.route('/clear_session')
 def clear_session():
     session.clear()
 
+# Show Portfolio in Index (Home) Page 
 @app.route("/")
 @require_login
 def index(): 
     portfolio = db.session.execute(db.select(Portfolio).filter_by(user_id=session["user_id"])).scalars()
     return render_template("index.html", portfolio=portfolio)
 
+# Show Trade History
 @app.route("/trade_history")
 @require_login
 def trade_history(): 
     trade_history = db.session.execute(db.select(Trade_History).filter_by(user_id=session["user_id"])).scalars()
     return render_template("trade_history.html", trade_history=trade_history)
 
+# Deposit Money Into Account
 @app.route("/deposit", methods=["GET","POST"])
 @require_login
 def depsoit(): 
@@ -128,7 +132,8 @@ def depsoit():
         return redirect("/")
     else: 
         return render_template("deposit.html")
-    
+
+# Quote Stock 
 @app.route("/quote", methods=["GET", "POST"])
 @require_login
 def quote():
@@ -139,6 +144,7 @@ def quote():
     else:
         return render_template("quote.html")
 
+# Buy Stock
 @app.route("/buy", methods=["GET","POST"])
 @require_login
 def buy(): 
@@ -175,6 +181,7 @@ def buy():
     else: 
         return render_template("buy.html")
 
+# Sell Stock 
 @app.route("/sell", methods=["GET","POST"])
 @require_login
 def sell(): 
