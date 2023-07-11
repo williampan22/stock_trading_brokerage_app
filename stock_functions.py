@@ -51,7 +51,7 @@ def chart_stock_price(ticker_symbol, interval, outputsize):
 
     ax.set_xlabel('Date', fontsize=12)
     ax.set_ylabel('Closing Price', fontsize=12)
-    ax.set_title('Stock Price Chart of ' + ticker_symbol, fontsize=16)
+    ax.set_title('Stock Price Chart of ' + ticker_symbol.upper(), fontsize=16)
     ax.tick_params(axis='both', labelsize=10)
 
     fig.set_facecolor('white')

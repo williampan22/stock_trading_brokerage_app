@@ -6,9 +6,11 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from dotenv import load_dotenv
 from werkzeug.security import check_password_hash, generate_password_hash
-
-from stock_functions import quote_stock
+from stock_functions import quote_stock, get_stock_price_history, chart_stock_price
 from login import require_login
+import matplotlib.pyplot as plt
+from io import BytesIO
+import base64
 
 # Hides secret api key 
 load_dotenv() 
@@ -140,7 +142,12 @@ def quote():
     if request.method == "POST":
         symbol = request.form.get("symbol")
         quote = quote_stock(symbol, API_KEY)
-        return render_template("quoted_show_info.html", quote=quote)
+        fig = chart_stock_price(symbol, "1day", 1000)
+        buffer = BytesIO()
+        fig.savefig(buffer, format='png')
+        buffer.seek(0)
+        stock_chart = base64.b64encode(buffer.getvalue()).decode('utf-8')
+        return render_template("quoted_show_info.html", quote=quote, stock_chart=stock_chart)
     else:
         return render_template("quote.html")
 

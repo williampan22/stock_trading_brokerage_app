@@ -21,6 +21,8 @@
     <p>52 Week Low: {{quote.fifty_two_week["low"]}}</p>
     <p>52 Week High: {{quote.fifty_two_week["high"]}}</p>
 
+    <h1>Stock Price Chart of {{quote.name}} </h1>
+    <img src="data:image/png;base64, {{ stock_chart }}" alt="Chart">
 
 
 {% endblock %}
