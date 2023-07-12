@@ -60,4 +60,3 @@ def chart_stock_price(ticker_symbol, interval, outputsize):
     plt.savefig('plot.png', dpi=300)
     return fig
 
-chart_stock_price("INTU", "1day", 1000)
