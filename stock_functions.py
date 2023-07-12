@@ -57,6 +57,6 @@ def chart_stock_price(ticker_symbol, interval, outputsize):
     fig.set_facecolor('white')
 
     plt.tight_layout(pad=2)
-    plt.savefig('plot.png', dpi=300)
+    # plt.savefig('plot.png', dpi=300)
     return fig
 
