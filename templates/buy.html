@@ -4,6 +4,10 @@
     Buy Stock
 {% endblock %}
 
+{% block header %}
+    Buy Stock
+{% endblock %}
+
 {% block body %}
     <form action="/buy" method="post">
         <input autocomplete="off" name="symbol" placeholder="Symbol" type="text" required >

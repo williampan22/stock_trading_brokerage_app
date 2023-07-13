@@ -4,6 +4,10 @@
     Quote Stock
 {% endblock %}
 
+{% block header %}
+    Quote Stock
+{% endblock %}
+
 {% block body %}
     <form action="/quote" method="post">
         <input autocomplete="off" name="symbol" placeholder="Symbol" type="text" required >

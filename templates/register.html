@@ -4,6 +4,10 @@
     Register
 {% endblock %}
 
+{% block header %}
+    Register Account
+{% endblock %}
+
 {% block body %}
     <form action="/register" method="post">
         <input autocomplete="off" name="username" placeholder="Username" type="text" required >
