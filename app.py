@@ -66,7 +66,7 @@ def register():
         db.session.commit()
         return redirect("/login")
     else: 
-        return render_template("register.html")
+        return render_template("register.html", active_page="register")
 
 # Login into account
 @app.route("/login", methods=["GET", "POST"])
@@ -92,7 +92,7 @@ def login():
         session["user_id"] = user.id
         return redirect("/")
     else: 
-        return render_template("login.html")
+        return render_template("login.html", active_page='login')
 
 # Log user out
 @app.route("/logout")
@@ -100,6 +100,18 @@ def login():
 def logout():
     session.clear()
     return redirect("/login")
+
+# Features
+@app.route("/features")
+def features():
+    session.clear()
+    return render_template("features.html", active_page="features")
+
+# Features
+@app.route("/about")
+def about():
+    session.clear()
+    return render_template("about.html", active_page="about")
 
 # Clear Flask User Session after close browser
 @app.route('/clear_session')
