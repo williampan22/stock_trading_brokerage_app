@@ -111,7 +111,9 @@ def clear_session():
 @require_login
 def index(): 
     portfolio = db.session.execute(db.select(Portfolio).filter_by(user_id=session["user_id"])).scalars()
-    return render_template("index.html", portfolio=portfolio)
+    user = db.one_or_404(db.select(User).filter_by(id=session["user_id"]))
+    current_cash = round(user.cash, 2)
+    return render_template("index.html", portfolio=portfolio, current_cash=current_cash)
 
 # Show Trade History
 @app.route("/trade_history")
@@ -133,7 +135,9 @@ def depsoit():
         db.session.commit()
         return redirect("/")
     else: 
-        return render_template("deposit.html")
+        user = db.session.execute(db.select(User).filter_by(id=session["user_id"])).scalar_one_or_none()
+        current_cash = user.cash
+        return render_template("deposit.html", current_cash=current_cash)
 
 # Quote Stock 
 @app.route("/quote", methods=["GET", "POST"])

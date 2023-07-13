@@ -5,9 +5,12 @@
 {% endblock %}
 
 {% block body %}
-    <form action="/deposit" method="post">
-        <input autocomplete="off" name="cash_to_deposit" placeholder="Amount to Deposit (USD)" type="number" step = "0.01" min="0" required>
-        <button type="submit">Deposit</button>
-    </form>
+
+<h4>Cash: ${{current_cash}}</h4>
+
+<form action="/deposit" method="post">
+    <input autocomplete="off" name="cash_to_deposit" placeholder="Amount to Deposit (USD)" type="number" step = "0.01" min="0" required>
+    <button type="submit">Deposit</button>
+</form>
 
 {% endblock %}
