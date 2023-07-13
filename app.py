@@ -125,14 +125,14 @@ def index():
     portfolio = db.session.execute(db.select(Portfolio).filter_by(user_id=session["user_id"])).scalars()
     user = db.one_or_404(db.select(User).filter_by(id=session["user_id"]))
     current_cash = round(user.cash, 2)
-    return render_template("index.html", portfolio=portfolio, current_cash=current_cash)
+    return render_template("index.html", portfolio=portfolio, current_cash=current_cash, active_page='portfolio')
 
 # Show Trade History
 @app.route("/trade_history")
 @require_login
 def trade_history(): 
     trade_history = db.session.execute(db.select(Trade_History).filter_by(user_id=session["user_id"])).scalars()
-    return render_template("trade_history.html", trade_history=trade_history)
+    return render_template("trade_history.html", trade_history=trade_history, active_page='trade_history')
 
 # Deposit Money Into Account
 @app.route("/deposit", methods=["GET","POST"])
@@ -149,7 +149,7 @@ def depsoit():
     else: 
         user = db.session.execute(db.select(User).filter_by(id=session["user_id"])).scalar_one_or_none()
         current_cash = user.cash
-        return render_template("deposit.html", current_cash=current_cash)
+        return render_template("deposit.html", current_cash=current_cash, active_page='deposit')
 
 # Quote Stock 
 @app.route("/quote", methods=["GET", "POST"])
@@ -165,7 +165,7 @@ def quote():
         stock_chart = base64.b64encode(buffer.getvalue()).decode('utf-8')
         return render_template("quoted_show_info.html", quote=quote, stock_chart=stock_chart)
     else:
-        return render_template("quote.html")
+        return render_template("quote.html", active_page='quote')
 
 # Buy Stock
 @app.route("/buy", methods=["GET","POST"])
@@ -202,7 +202,7 @@ def buy():
         db.session.commit()
         return redirect("/")
     else: 
-        return render_template("buy.html")
+        return render_template("buy.html", active_page='buy')
 
 # Sell Stock 
 @app.route("/sell", methods=["GET","POST"])
@@ -239,7 +239,7 @@ def sell():
         return redirect("/")
     else: 
         portfolio = db.session.execute(db.select(Portfolio).filter_by(user_id=session["user_id"])).scalars()
-        return render_template("sell.html", portfolio=portfolio)
+        return render_template("sell.html", portfolio=portfolio, active_page='sell')
 # User model
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)

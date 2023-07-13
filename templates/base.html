@@ -8,7 +8,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
 </head>
 <body>
-
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
           <a class="navbar-brand" href="/login">Panvest Securities & Stock Brokerage</a>
@@ -17,17 +16,24 @@
           </button>
           <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav ms-auto">
+              {% if session["user_id"] %}
+                <a class="nav-link {% if active_page == 'portfolio' %}active{% endif %}" {% if active_page == 'portfolio' %}aria-current="page"{% endif %} href="/">Portfolio</a>
+                <a class="nav-link {% if active_page == 'quote' %}active{% endif %}" {% if active_page == 'quote' %}aria-current="page"{% endif %} href="/quote">Quote Stock</a>
+                <a class="nav-link {% if active_page == 'buy' %}active{% endif %}" {% if active_page == 'buy' %}aria-current="page"{% endif %} href="/buy">Buy</a>
+                <a class="nav-link {% if active_page == 'sell' %}active{% endif %}" {% if active_page == 'sell' %}aria-current="page"{% endif %} href="/sell">Sell</a>
+                <a class="nav-link {% if active_page == 'trade_history' %}active{% endif %}" {% if active_page == 'trade_history' %}aria-current="page"{% endif %} href="/trade_history">History</a>
+                <a class="nav-link" href="/logout">Logout</a>
+              {% else %}
                 <a class="nav-link {% if active_page == 'about' %}active{% endif %}" {% if active_page == 'about' %}aria-current="page"{% endif %} href="/about">About</a>
                 <a class="nav-link {% if active_page == 'features' %}active{% endif %}" {% if active_page == 'features' %}aria-current="page"{% endif %} href="/features">Features</a>
                 <a class="nav-link {% if active_page == 'login' %}active{% endif %}" {% if active_page == 'login' %}aria-current="page"{% endif %} href="/login">Login</a>
-              <a class="nav-link {% if active_page == 'register' %}active{% endif %}" {% if active_page == 'register' %}aria-current="page"{% endif %} href="/register">Register</a>
-              <!-- <a class="nav-link disabled">Disabled</a> -->
+                <a class="nav-link {% if active_page == 'register' %}active{% endif %}" {% if active_page == 'register' %}aria-current="page"{% endif %} href="/register">Register</a>              
+              {% endif %}
+              
             </div>
           </div>
         </div>
       </nav>
-      
-
     <div class="container">
         <header>
             <h1>Stock Brokerage</h1>
