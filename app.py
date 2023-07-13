@@ -42,7 +42,6 @@ def after_request(response):
 # Register for an account
 @app.route("/register", methods=["GET", "POST"])
 def register():
-
     if request.method == "POST":
         # Get password and username from HTML form
         username = request.form.get("username")
@@ -74,7 +73,7 @@ def login():
 
     # Clear session_id to enforce log-in
     session.clear() 
-
+    
     if request.method == "POST": 
         # Get username and password from HTML form
         username = request.form.get("username")

@@ -11,6 +11,7 @@
 {% block body %}
 <form action="/sell" method="post">
     <select autcomplete="off" name="symbol" id="symbol">
+        <option disabled selected value="">Select a Stock to Sell</option>
         {% for stock in portfolio %}
         <option value="{{stock.symbol}}">{{stock.symbol}}</option>
         {% endfor %}
