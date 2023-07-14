@@ -73,7 +73,7 @@ def login():
 
     # Clear session_id to enforce log-in
     session.clear() 
-    
+
     if request.method == "POST": 
         # Get username and password from HTML form
         username = request.form.get("username")
@@ -154,8 +154,15 @@ def depsoit():
 @app.route("/quote", methods=["GET", "POST"])
 @require_login
 def quote():
-    if request.method == "POST":
-        symbol = request.form.get("symbol")
+    symbol = ""
+    show_quote_info = False
+    preloaded_symbol = request.args.get("symbol")
+    if preloaded_symbol: 
+        symbol = preloaded_symbol
+        show_quote_info = True
+    if request.method == "POST" or show_quote_info:
+        if not symbol:
+            symbol = request.form.get("symbol")
         quote = quote_stock(symbol, API_KEY)
         fig = chart_stock_price(symbol, "1day", 1000)
         buffer = BytesIO()
@@ -164,7 +171,7 @@ def quote():
         stock_chart = base64.b64encode(buffer.getvalue()).decode('utf-8')
         return render_template("quoted_show_info.html", quote=quote, stock_chart=stock_chart)
     else:
-        return render_template("quote.html", active_page='quote')
+        return render_template("quote.html", active_page='quote', preloaded_symbol=preloaded_symbol)
 
 # Buy Stock
 @app.route("/buy", methods=["GET","POST"])
@@ -225,7 +232,6 @@ def sell():
         if not quote: 
             return redirect("/buy"), 400
         symbol = quote["symbol"]
-        name = quote["name"]
         current_price = round(float(quote["close"]), 2)
         total_value = round(current_price * shares_to_sell, 2)
         user = db.one_or_404(db.select(User).filter_by(id=session["user_id"]))

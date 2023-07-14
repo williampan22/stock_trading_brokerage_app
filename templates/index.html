@@ -15,16 +15,16 @@ Portfolio
     <thead>
         <tr>
             <th>Symbol</th>
-            <th>Share</th>
+            <th>Name</th>
             <th>Shares</th>
-            <th>Average Buy Price</th>
+            <th>Average Cost/Share</th>
             <th>Total Value</th>
         </tr>
     </thead>
     <tbody>
         {% for row in portfolio %}
         <tr>
-            <td>{{row.symbol}}</td>
+            <td><a href="/quote?symbol={{row.symbol}}">{{row.symbol}}</a></td>
             <td>{{row.name}}</td>
             <td>{{row.shares}}</td>
             <td>${{row.avg_buy_price}}</td>
