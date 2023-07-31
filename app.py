@@ -1,6 +1,6 @@
 import os
 from datetime import datetime
-from flask import Flask, render_template, redirect, request, session
+from flask import Flask, render_template, redirect, request, session, jsonify
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
@@ -161,8 +161,10 @@ def quote():
         symbol = preloaded_symbol
         show_quote_info = True
     if request.method == "POST" or show_quote_info:
+        preloaded_symbol = request.args.get("symbol")
+        symbol = preloaded_symbol
         if not symbol:
-            symbol = request.form.get("symbol")
+            symbol = request.form.get("symbol")            
         quote = quote_stock(symbol, API_KEY)
         fig = chart_stock_price(symbol, "1day", 1000)
         buffer = BytesIO()
@@ -171,7 +173,7 @@ def quote():
         stock_chart = base64.b64encode(buffer.getvalue()).decode('utf-8')
         return render_template("quoted_show_info.html", quote=quote, stock_chart=stock_chart)
     else:
-        return render_template("quote.html", active_page='quote', preloaded_symbol=preloaded_symbol)
+        return render_template("quote.html", active_page='quote')
 
 # Buy Stock
 @app.route("/buy", methods=["GET","POST"])
@@ -211,38 +213,50 @@ def buy():
         return render_template("buy.html", active_page='buy')
 
 # Sell Stock 
-@app.route("/sell", methods=["GET","POST"])
+@app.route("/sell", methods=["GET", "POST"])
 @require_login
-def sell(): 
-    if request.method == "POST": 
+def sell():
+    if request.method == "POST":
         symbol_to_sell = request.form.get("symbol").upper()
         shares_to_sell = int(request.form.get("shares"))
         stock_to_sell = db.session.execute(db.select(Portfolio).filter_by(user_id=session["user_id"], symbol=symbol_to_sell)).scalar_one_or_none()
-        if not stock_to_sell: 
-            return redirect("/sell"), 400
+
+        if not stock_to_sell:
+            return jsonify({'error': 'Stock not found in your portfolio.'}), 400
+
         shares_owned = stock_to_sell.shares
-        if shares_to_sell > shares_owned or shares_to_sell < 0: 
-            return redirect("/sell"), 400
-        shares_left = shares_owned - shares_to_sell 
-        if shares_left > 0: 
+
+        if shares_to_sell > shares_owned or shares_to_sell < 0:
+            return jsonify({'error': 'Invalid number of shares to sell.'}), 400
+
+        shares_left = shares_owned - shares_to_sell
+
+        if shares_left > 0:
             stock_to_sell.shares = shares_left
-        elif shares_left == 0: 
+        elif shares_left == 0:
             db.session.delete(stock_to_sell)
+
         quote = quote_stock(symbol_to_sell, API_KEY)
-        if not quote: 
-            return redirect("/buy"), 400
+
+        if not quote:
+            return jsonify({'error': 'Error fetching stock quote.'}), 400
+
         symbol = quote["symbol"]
         current_price = round(float(quote["close"]), 2)
         total_value = round(current_price * shares_to_sell, 2)
+
         user = db.one_or_404(db.select(User).filter_by(id=session["user_id"]))
         current_cash = user.cash
         new_cash = current_cash + total_value
-        user.cash = new_cash 
+        user.cash = new_cash
+
         trade_history_trade = Trade_History(user_id=session["user_id"], order_type="SELL", order_price=current_price, symbol=symbol, shares=shares_to_sell, total_value=total_value, time=datetime.now())
         db.session.add(trade_history_trade)
         db.session.commit()
-        return redirect("/")
-    else: 
+
+        return jsonify({'message': 'Shares sold successfully.'}), 200
+
+    else:
         portfolio = db.session.execute(db.select(Portfolio).filter_by(user_id=session["user_id"])).scalars()
         return render_template("sell.html", portfolio=portfolio, active_page='sell')
 # User model

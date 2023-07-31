@@ -9,14 +9,16 @@
 {% endblock %}
 
 {% block body %}
-<form action="/sell" method="post">
+<form id="sell-form" action="/sell" method="post">
     <select autcomplete="off" name="symbol" id="symbol">
         <option disabled selected value="">Select a Stock to Sell</option>
         {% for stock in portfolio %}
         <option value="{{stock.symbol}}">{{stock.symbol}}</option>
         {% endfor %}
     </select>
-    <input autocomplete="off" name="shares" placeholder="Shares" type="number" min="0">
+    <input autocomplete="off" name="shares" id="shares" placeholder="Shares" type="number" min="0">
     <button type="submit">Sell</button>
 </form>
+
+<div id="error-message" class="text-danger" style="display: none;"></div>
 {% endblock %}
