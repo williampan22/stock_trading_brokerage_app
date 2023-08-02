@@ -9,11 +9,13 @@
 {% endblock %}
 
 {% block body %}
-    <form action="/register" method="post">
-        <input autocomplete="off" name="username" placeholder="Username" type="text" required >
-        <input autocomplete="off" name="password" placeholder="Password" type="text" required >
-        <input autocomplete="off" name="confirm_password" placeholder="Confirm Password" type="text" required >
+    <form id="register-form" action="/register" method="post">
+        <input autocomplete="off" name="username" id="username" placeholder="Username" type="text" required >
+        <input autocomplete="off" name="password" id="password" placeholder="Password" type="password" required >
+        <input autocomplete="off" name="confirm_password" id="confirm-password" placeholder="Confirm Password" type="password" required >
         <button type="submit">Register</button>
     </form>
 
+    <div id="error-message" class="text-danger" style="display: none;"></div>
+    <script src="/static/register.js"></script>
 {% endblock %}

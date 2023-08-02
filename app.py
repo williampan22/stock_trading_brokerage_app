@@ -49,21 +49,21 @@ def register():
         confirm_password = request.form.get("confirm_password")
         # If username, password, or password confirmation is blank (from inspect element) return error
         if (not username or not password or not confirm_password): 
-            return redirect("/register"), 400
+            return jsonify({'error': 'Username, password, and confirmation password cannot be blank.'}), 400
         # If password does not match password confirmation return error
         if password != confirm_password: 
-            return redirect("/register"), 400
+            return jsonify({'error': 'Passwords do not match. Ensure that the password matches the confirmation password.'}), 400
         # If username already exists return error
         user = db.session.execute(db.select(User).filter_by(username=username)).scalar_one_or_none()
         if user: 
-            return redirect("/register"), 400
+            return jsonify({'error': 'Username already exists. Plesae choose a new username.'}), 400
         # Hash password for privacy
         hash_password = generate_password_hash(password)    
         # Create user and add to database
         user = User(username=username, hash_password=hash_password, cash=0)
         db.session.add(user)
         db.session.commit()
-        return redirect("/login")
+        return jsonify({'message': 'Registered Successfully.'}), 200
     else: 
         return render_template("register.html", active_page="register")
 
