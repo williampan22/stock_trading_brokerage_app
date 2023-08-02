@@ -10,10 +10,12 @@
 
 {% block body %}
 
-    <form action="/login" method="post">
-        <input autocomplete="off" name="username" placeholder="Username" type="text" required >
-        <input autocomplete="off" name="password" placeholder="Password" type="text" required >
+    <form id="login-form" action="/login" method="post">
+        <input autocomplete="off" name="username" id="username" placeholder="Username" type="text" required >
+        <input autocomplete="off" name="password" id="password" placeholder="Password" type="password" required >
         <button type="submit">Log In</button>
     </form>
 
+    <div id="error-message" class="text-danger" style="display: none;"></div>
+    <script src="/static/login.js"></script>
 {% endblock %}

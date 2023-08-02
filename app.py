@@ -70,27 +70,31 @@ def register():
 # Login into account
 @app.route("/login", methods=["GET", "POST"])
 def login():
-
     # Clear session_id to enforce log-in
-    session.clear() 
+    session.clear()
 
-    if request.method == "POST": 
+    if request.method == "POST":
         # Get username and password from HTML form
         username = request.form.get("username")
         password = request.form.get("password")
+
         # If username or password is blank (from inspect element) return error
-        if not username or not password: 
-            return redirect("/login"), 403
-        # SELECT username from database and return error if password does not match 
+        if not username or not password:
+            return jsonify({'error': 'Username and password cannot be blank'}), 400
+
+        # SELECT username from database and return error if password does not match
         user = db.session.execute(db.select(User).filter_by(username=username)).scalar_one_or_none()
-        if not user: 
-            return redirect("/login"), 404
-        if not check_password_hash(user.hash_password, password): 
-            return redirect("/login"), 403
+
+        if not user:
+            return jsonify({'error': 'Invalid username or password'}), 400
+
+        if not check_password_hash(user.hash_password, password):
+            return jsonify({'error': 'Invalid username or password'}), 400
+
         # Log user in with session_id
         session["user_id"] = user.id
-        return redirect("/")
-    else: 
+        return jsonify({'message': 'Login Successful.'}), 200
+    else:
         return render_template("login.html", active_page='login')
 
 # Log user out
