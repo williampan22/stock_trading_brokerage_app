@@ -9,10 +9,14 @@
 {% endblock %}
 
 {% block body %}
-    <form action="/buy" method="post">
-        <input autocomplete="off" name="symbol" placeholder="Symbol" type="text" required >
-        <input autocomplete="off" name="shares" placeholder="Shares" type="number" min="0" required>
+    <form id="buy-form" class="form-error-handling" action="/buy" method="post">
+        <input autocomplete="off" name="symbol" id="symbol" placeholder="Symbol" type="text" required>
+        <input autocomplete="off" name="shares" id="shares" placeholder="Shares" type="number" min="0" required>
         <button type="submit">Buy</button>
     </form>
 
+    <!-- Error message div for buy form -->
+    <div id="error-message" class="text-danger" style="display: none;"></div>
+
+    <script src="/static/buy.js"></script>
 {% endblock %}

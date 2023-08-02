@@ -24,3 +24,8 @@ body {
   margin-top: auto;
   text-align: center;
 }
+
+#buy-error-message {
+  display: block; /* To make it visible */
+  /* ... other CSS styles ... */
+}

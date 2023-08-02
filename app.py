@@ -183,19 +183,24 @@ def buy():
         symbol = request.form.get("symbol")
         shares = int(request.form.get("shares"))
         quote = quote_stock(symbol, API_KEY)
+
         if not quote: 
-            return redirect("/buy"), 400
+            return jsonify({'error': 'Invalid Stock Ticker. Please Enter a Valid Stock Ticker'}), 400
+        
         symbol = quote["symbol"]
         name = quote["name"]
         current_price = round(float(quote["close"]), 2)
         total_cost = round(current_price * shares, 2)
         user = db.one_or_404(db.select(User).filter_by(id=session["user_id"]))
         current_cash = user.cash
+
         if current_cash < total_cost:
-            return redirect("/buy"), 400
+            return jsonify({'error': 'Insufficient funds to buy the shares.'}), 400
+        
         new_cash = current_cash - total_cost
         user.cash = new_cash
         is_stock_already_owned = db.session.execute(db.select(Portfolio).filter_by(user_id=session["user_id"], symbol=symbol)).scalar_one_or_none()
+
         if not is_stock_already_owned:
             portfolio_trade = Portfolio(user_id=session["user_id"], symbol=symbol, name=name, shares=shares, avg_buy_price=current_price, total_value=total_cost)
             db.session.add(portfolio_trade)
@@ -205,12 +210,15 @@ def buy():
             new_value = new_shares * current_price
             is_stock_already_owned.shares = new_shares
             is_stock_already_owned.total_value = new_value 
+
         trade_history_trade = Trade_History(user_id=session["user_id"], order_type="BUY", order_price=current_price, symbol=symbol, shares=shares, total_value=total_cost, time=datetime.now())
         db.session.add(trade_history_trade)
         db.session.commit()
-        return redirect("/")
+        return jsonify({'message': 'Shares bought successfully.'}), 200
+    
     else: 
         return render_template("buy.html", active_page='buy')
+
 
 # Sell Stock 
 @app.route("/sell", methods=["GET", "POST"])
@@ -226,8 +234,11 @@ def sell():
 
         shares_owned = stock_to_sell.shares
 
-        if shares_to_sell > shares_owned or shares_to_sell < 0:
-            return jsonify({'error': 'Invalid number of shares to sell.'}), 400
+        if shares_to_sell > shares_owned:
+            return jsonify({'error': 'You cannot sell more shares than you currently own. Invalid number of shares'}), 400
+        
+        if shares_to_sell < 0:
+            return jsonify({'error': 'You cannot sell a negative amount of shares. Invalid number of shares'}), 400
 
         shares_left = shares_owned - shares_to_sell
 
