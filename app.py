@@ -128,6 +128,29 @@ def index():
     portfolio = db.session.execute(db.select(Portfolio).filter_by(user_id=session["user_id"])).scalars()
     user = db.one_or_404(db.select(User).filter_by(id=session["user_id"]))
     current_cash = round(user.cash, 2)
+    for row in portfolio: 
+        symbol = row.symbol
+        quote = quote_stock(symbol, API_KEY)
+        current_price = float(quote["close"])
+        change = float(quote["change"])
+        percent_change = float(quote["percent_change"])
+        avg_buy_price = row.avg_buy_price
+        shares = row.shares
+        initial_total_cost = round(avg_buy_price*shares, 2)
+        total_value = round(current_price*shares, 2)
+        profit_loss = round(total_value - initial_total_cost, 2)
+        profit_loss_percent = round(profit_loss/initial_total_cost, 4)
+        profit_loss_day = round(change*shares, 2) 
+        profit_loss_percent_day = round(percent_change, 4)
+        row.initial_total_value = initial_total_cost
+        row.total_value = total_value
+        row.current_price = round(current_price, 2)
+        row.profit_loss = profit_loss
+        row.profit_loss_percent = profit_loss_percent
+        row.profit_loss_day = profit_loss_day
+        row.profit_loss_percent_day = profit_loss_percent_day
+    db.session.commit()
+    portfolio = db.session.execute(db.select(Portfolio).filter_by(user_id=session["user_id"])).scalars()
     return render_template("index.html", portfolio=portfolio, current_cash=current_cash, active_page='portfolio')
 
 # Show Trade History
@@ -289,7 +312,13 @@ class Portfolio(db.Model):
     name = db.Column(db.String(100), nullable=False)
     shares = db.Column(db.Integer, nullable=False)
     avg_buy_price = db.Column(db.Float, nullable=False)
+    current_price = db.Column(db.Float, nullable=True)
+    initial_total_value = db.Column(db.Float, nullable=True)
     total_value = db.Column(db.Float, nullable=False)
+    profit_loss = db.Column(db.Float, nullable=True)
+    profit_loss_percent = db.Column(db.Float, nullable=True)
+    profit_loss_day = db.Column(db.Float, nullable=True)
+    profit_loss_percent_day = db.Column(db.Float, nullable=True)
     
 # History model
 class Trade_History(db.Model):

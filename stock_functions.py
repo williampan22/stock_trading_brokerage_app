@@ -57,6 +57,28 @@ def chart_stock_price(ticker_symbol, interval, outputsize):
     fig.set_facecolor('white')
 
     plt.tight_layout(pad=2)
-    # plt.savefig('plot.png', dpi=300)
     return fig
 
+# Errors
+# Twelve Data API uses a unified error response scheme. Consisting of a JSON object with code, message and status keys.
+
+# HTTP request example
+
+# https://api.twelvedata.com/time_series?symbol=AAPL&interval=0.99min&apikey=your_api_key
+# This request with incorrect interval set will return JSON with the following structure
+
+# {
+#   "code": 400,
+#   "message": "Invalid **interval** provided: 0.99min. Supported intervals: 1min, 5min, 15min, 30min, 45min, 1h, 2h, 4h, 8h, 1day, 1week, 1month",
+#   "status": "error"
+# }
+# Possible output error codes are:
+
+# Error Code	Status	Meaning
+# 400	Bad Request	There is an error with one or multiple parameters.
+# 401	Unauthorized	Your API key is wrong or not valid.
+# 403	Forbidden	Your API key is valid but has no permissions to make request available on the upper plans.
+# 404	Not Found	The specified data can not be found.
+# 414	Parameter Too Long	The parameter which accepts multiple values is out of range.
+# 429	Too Many Requests	You've reached your API request limits.
+# 500	Internal Server Error	There is an error on the server-side. Try again later.
