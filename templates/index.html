@@ -72,4 +72,20 @@ Portfolio
   </tbody>
 </table>
 
+<h5>Developer Note </h2>
+{% if API_LIMIT_REACHED %}
+    <div style="color: red; font-weight: bold;">
+        <h6>API Limit Reached: Some stock quotes and information may not be up to date.
+          Please reload the page after a couple of seconds to ensure up-to-date data. 
+          API Limits (8 quotes per minute) and refreshed every 60 seconds. Stock quotes obtained from TwelveData Stock API. </h4>
+    </div>
+{% else %}
+<div style="color: green; font-weight: bold;">
+  <h6>API Limit Not Yet Reached. All stock quotes and information are up to date. Stock quotes obtained from TwelveData Stock API. </h6>
+</div>
+
+
+{% endif %}
+
+
 {% endblock %}
