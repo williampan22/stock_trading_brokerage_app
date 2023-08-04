@@ -21,13 +21,19 @@ body {
 .footer {
   background-color: #f8f9fa;
   padding: 20px 0;
+  margin-top: auto;
   text-align: center;
-  position: fixed; /* Set the footer position to fixed */
-  left: 0;
-  bottom: 0;
-  width: 100%; /* Make sure the footer spans the full width */
 }
 
 #buy-error-message {
-  display: block; 
+  display: block;
+}
+
+.stock-info-container {
+  display: flex;
+}
+
+.stock-info-container {
+  display: flex;
+  gap: 30px;
 }

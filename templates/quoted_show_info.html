@@ -9,24 +9,82 @@
 {% endblock %}
 
 {% block body %}
-    
-    <p>Name: {{quote.name}}</p>
-    <p>Symbol: {{quote.symbol}}</p>
-    <p>Symbol: {{quote.symbol}}</p>
-    <p>Exchange: {{quote.exchange}}</p>
-    <p>Open: {{ quote.open}}</p>
-    <p>High: {{quote.high}}</p>
-    <p>Low: {{quote.low}}</p>
-    <p>Close: {{quote.close}}</p>
-    <p>Volume: {{quote.volume}}</p>
-    <p>Average Volume: {{quote.average_volume}}</p>
-    <p>Previous Close: {{quote.previous_close}}</p>
-    <p>Percent Change: {{quote.percent_change}}</p>
-    <p>52 Week Low: {{quote.fifty_two_week["low"]}}</p>
-    <p>52 Week High: {{quote.fifty_two_week["high"]}}</p>
-
-    <h1>Stock Price Chart of {{quote.name}} </h1>
+<div class="stock-info-container">
+    <div class="stock-info-column">
+        <p><strong>Name:</strong> {{quote.name}}</p>
+        <p><strong>Symbol:</strong> {{quote.symbol}}</p>
+        <p><strong>Exchange:</strong> {{quote.exchange}}</p>
+        <p><strong>Open:</strong> <span id="formattedOpen">{{quote.open}}</span></p>
+        <p><strong>High:</strong> <span id="formattedHigh">{{quote.high}}</span></p>
+        <p><strong>Low:</strong> <span id="formattedLow">{{quote.low}}</span></p>
+        <p><strong>Close:</strong> <span id="formattedClose">{{quote.close}}</span></p>
+    </div>
+    <div class="stock-info-column">
+        <p><strong>Volume:</strong> <span id="formattedVolume">{{quote.volume}}</span></p>
+        <p><strong>Average Volume:</strong> <span id="formattedAvgVolume">{{quote.average_volume}}</span></p>
+        <p><strong>Previous Close:</strong> <span id="formattedPrevClose">${{quote.previous_close}}</span></p>
+        <p><strong>Change:</strong> <span id="formattedChange">${{quote.change}}</span></p>
+        <p><strong>Percent Change:</strong> {{quote.percent_change}}%</p>
+        <p><strong>52 Week Low:</strong> <span id="formatted52WeekLow">${{quote.fifty_two_week.low}}</span></p>
+        <p><strong>52 Week High:</strong> <span id="formatted52WeekHigh">${{quote.fifty_two_week.high}}</span></p>
+    </div>
+</div>
+<div class="stock-chart">
+    <h1>Stock Price Chart of {{quote.name}}</h1>
     <img src="data:image/png;base64, {{ stock_chart }}" alt="Chart">
+</div>
 
+<script>
+  // Function to format numbers with commas for thousands separators and two decimal places
+  function formatNumberWithCommasAndDecimals(value, decimals) {
+    // Remove the "$" sign if present and any commas
+    value = value.replace(/[$,]/g, '');
+    
+    // Parse the value as a floating-point number
+    const floatValue = parseFloat(value);
+
+    // Format the number with commas for thousands separators and the specified decimal places
+    return floatValue.toLocaleString(undefined, {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals
+    });
+  }
+
+  // Get all elements that need formatting and apply the formatting
+  const elementsToFormatWithDollarSign = [
+    { elementId: 'formattedOpen', decimals: 2 },
+    { elementId: 'formattedHigh', decimals: 2 },
+    { elementId: 'formattedLow', decimals: 2 },
+    { elementId: 'formattedClose', decimals: 2 },
+    { elementId: 'formattedPrevClose', decimals: 2 },
+    { elementId: 'formattedChange', decimals: 2 },
+    { elementId: 'formatted52WeekLow', decimals: 2 },
+    { elementId: 'formatted52WeekHigh', decimals: 2 }
+  ];
+
+  const elementsToFormatWithoutDollarSign = [
+    { elementId: 'formattedVolume', decimals: 0 },
+    { elementId: 'formattedAvgVolume', decimals: 0 },
+  ];
+
+  for (const { elementId, decimals } of elementsToFormatWithDollarSign) {
+    const element = document.getElementById(elementId);
+    const value = element.innerText;
+    const formattedNumber = formatNumberWithCommasAndDecimals(value, decimals); 
+    if (formattedNumber[0] == "-"){ 
+        element.innerText = '-$' + formattedNumber.replace("-", ""); 
+    }
+    else{ 
+        element.innerText = '$' + formattedNumber; 
+    }
+  }
+
+  for (const { elementId, decimals } of elementsToFormatWithoutDollarSign) {
+    const element = document.getElementById(elementId);
+    const value = element.innerText;
+    element.innerText = formatNumberWithCommasAndDecimals(value, decimals);
+  }
+  
+</script>
 
 {% endblock %}
