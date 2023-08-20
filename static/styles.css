@@ -37,3 +37,18 @@ body {
   display: flex;
   gap: 30px;
 }
+
+#login-form input {
+  display: block;
+  margin-bottom: 10px; /* You can adjust the margin as needed for spacing */
+}
+
+/* CSS for the form-group class to stack input fields */
+.form-group {
+  margin-bottom: 10px; /* You can adjust the margin as needed for spacing */
+}
+
+/* Optional: Style the labels to make them more prominent */
+.form-group label {
+  font-weight: bold;
+}

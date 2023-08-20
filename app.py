@@ -172,8 +172,8 @@ def depsoit():
     if request.method == "POST": 
         cash_to_deposit = request.form.get("cash_to_deposit")
         user = db.session.execute(db.select(User).filter_by(id=session["user_id"])).scalar_one_or_none()
-        current_cash = user.cash
-        new_cash = current_cash + float(cash_to_deposit)
+        current_cash = round(user.cash, 2)
+        new_cash = round(current_cash + float(cash_to_deposit), 2)
         user.cash = new_cash
         db.session.commit()
         return redirect("/")

@@ -10,7 +10,7 @@
 
 {% block body %}
 
-<table class="table table-striped table-hover table-bordered">
+<table class="table table-hover table-bordered">
     <thead>
         <tr>
             <th>Order Type</th>
@@ -24,7 +24,16 @@
     <tbody>
         {% for row in trade_history %}
         <tr>
-            <td>{{row.order_type}}</td>
+            <td>
+                <script>
+                  var orderType = "{{ row.order_type }}";  
+                  if (orderType === "BUY") {
+                    document.write('<span style="color: green; font-weight: bold;">' + orderType + '</span>');
+                  } else {
+                    document.write('<span style="color: red; font-weight: bold;">' + orderType + '</span>');
+                  }
+                </script>
+            </td>
             <td>{{row.symbol}}</td>
             <td>{{row.shares}}</td>
             <td>{{row.order_price}}</td>
