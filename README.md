@@ -63,6 +63,10 @@ To access the project, clone the repository and then get a TwelveData API KEY to
 
 [![Screenshot-2023-08-20-115435.png](https://i.postimg.cc/pT6PRcX4/Screenshot-2023-08-20-115435.png)](https://postimg.cc/0MDTCfS0)
 
+# Security 
+
+Password hashing with Werkzeug Security is used before storing passwords in the SQL Database. 
+
 # Project Filesystem
 
 [![Screenshot-2023-08-20-115358.png](https://i.postimg.cc/C11FypYb/Screenshot-2023-08-20-115358.png)](https://postimg.cc/yJMq95DN)
