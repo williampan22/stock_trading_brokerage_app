@@ -41,6 +41,7 @@ I created an imitation of a stock brokerage app where users can trade stocks and
 [![Screenshot-2023-08-20-113052.png](https://i.postimg.cc/Xv381Zsr/Screenshot-2023-08-20-113052.png)](https://postimg.cc/tsSWYgQb)
 
 * **Deposit**: Deposit cash. Input amount of cash in USD to deposit. Error message is presented if the amount of cash that the user wishes to deposit is less than 0.
+  
 [![Screenshot-2023-08-20-113059.png](https://i.postimg.cc/hj2pdSbf/Screenshot-2023-08-20-113059.png)](https://postimg.cc/G8sF0nfC)
 
 * **Logout**: Logs users out of their account and redirects to the login page. This automatically occurs if the user is not logged in already and tries to access any page other than register, login, or logout. 
