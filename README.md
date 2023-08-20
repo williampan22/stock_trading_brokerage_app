@@ -14,12 +14,22 @@ I created an imitation of a stock brokerage app where users can trade stocks and
 
 * **Register**: Register for an account. Must input a username, password, and password confirmation. Error message is presented if the username is already taken or the password does not match the password confirmation.
 
+_Register Form_
+
 [![Screenshot-2023-08-20-112541.png](https://i.postimg.cc/3NyC02xc/Screenshot-2023-08-20-112541.png)](https://postimg.cc/xN2bWJHv)
+
+_Error Message_
+
 [![Screenshot-2023-08-20-112614.png](https://i.postimg.cc/59GmdKPd/Screenshot-2023-08-20-112614.png)](https://postimg.cc/MX7B152d)
 
 * **Login**: Log into account. Must input a username and password. Error message is presented if username and password do not match a valid account.
 
+_Login Form_
+
 [![Screenshot-2023-08-20-112426.png](https://i.postimg.cc/QxTJXgPB/Screenshot-2023-08-20-112426.png)](https://postimg.cc/YhtWRFtk)
+
+_Error Message_
+
 [![Screenshot-2023-08-20-112503.png](https://i.postimg.cc/rsvG1zdF/Screenshot-2023-08-20-112503.png)](https://postimg.cc/fSf0Zzj6)
 
 * **Home Page/Portfolio**: Shows users their portfolio and amount of cash. Portfolio is shown in a table consisting of symbols of stock owned, name of stock owned, number of shares, average cost/share, current price, initial price cost, total current value, total P/L, total P/L %, day P/L, and day P/L %.
@@ -29,7 +39,7 @@ I created an imitation of a stock brokerage app where users can trade stocks and
 
 * **Quote Stock**: Quote a stock. Must input a valid stock ticker. Upon quoting, show stock quote information (name, symbol, exchange, open, high, low, close, etc) and price stock chart. Error message is presented if the stock ticker is not valid.
 
-_Enter Stock Ticker_
+_Quote Stock Form_
 
 [![Screenshot-2023-08-20-112808.png](https://i.postimg.cc/c4pTYkYM/Screenshot-2023-08-20-112808.png)](https://postimg.cc/ZCLrzcwC)
 
@@ -40,12 +50,22 @@ _Upon Valid Stock Ticker, Show Quoted Stock Data & Stock Chart_
 
 * **Buy**: Buy a stock. Must input a stock ticker and amount of shares to buy. Error message is presented if the stock ticker is invalid, the number of shares is not a positive integer, or if there are insufficient funds to purchase stock.
 
+_Buy Stock Form_
+
 [![Screenshot-2023-08-20-112932.png](https://i.postimg.cc/bJymrGn7/Screenshot-2023-08-20-112932.png)](https://postimg.cc/zLQCPG07)
+
+_Error Message_
+
 [![Screenshot-2023-08-20-113001.png](https://i.postimg.cc/zv3pw90p/Screenshot-2023-08-20-113001.png)](https://postimg.cc/p5bDR1Nn)
 
 * **Sell**: Sell a stock. Shows a dropdown of all currently owned stocks and a form to input the number of shares to sell. Error message is presented if the number of shares to sell is more than currently owned or if the number is not a positive integer.
 
+_Sell Stock Form_
+
 [![Screenshot-2023-08-20-113018.png](https://i.postimg.cc/wMP2w0rz/Screenshot-2023-08-20-113018.png)](https://postimg.cc/7J3S6MDt)
+
+_Error Message_
+
 [![Screenshot-2023-08-20-113038.png](https://i.postimg.cc/W469smdm/Screenshot-2023-08-20-113038.png)](https://postimg.cc/Z9nPcdF0)
 
 * **Trade History**: View trade history of buying/selling stocks. Shows each trade and its order type (buy/sell), stock symbol, number of shares, order price, total value bought/sold, and time the trade occurred.
