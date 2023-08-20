@@ -9,7 +9,7 @@
 * Git, Github
 * Matplotlit, Pandas, Datetime, Werkzeug Security
 
-# Description
+## Description
 I created an imitation of a stock brokerage app where users can trade stocks and manage their portfolio. There are the following pages and respective actions: 
 
 * **Register**: Register for an account. Must input a username, password, and password confirmation. Error message is presented if the username is already taken or the password does not match the password confirmation.
@@ -53,25 +53,25 @@ I created an imitation of a stock brokerage app where users can trade stocks and
 
 * **Logout**: Logs users out of their account and redirects to the login page. This automatically occurs if the user is not logged in already and tries to access any page other than register, login, or logout. 
 
-# Clone Repository & API Keys
+## Clone Repository & API Keys
 
 To access the project, clone the repository and then get a TwelveData API KEY to get stock data at https://twelvedata.com/. Also make your own random SECRET KEY for configuring Flask Session. Python, Flask, and multiple libraries must also be installed on your computer. 
 
 [![Screenshot-2023-08-20-115208.png](https://i.postimg.cc/zDFk2mvx/Screenshot-2023-08-20-115208.png)](https://postimg.cc/mhhMh5Q9)
 
-# SQL Database Structure 
+## SQL Database Structure 
 
 [![Screenshot-2023-08-20-115435.png](https://i.postimg.cc/pT6PRcX4/Screenshot-2023-08-20-115435.png)](https://postimg.cc/0MDTCfS0)
 
-# Security 
+## Security 
 
 Password hashing with Werkzeug Security is used before storing passwords in the SQL Database. 
 
-# Project Filesystem
+## Project Filesystem
 
 [![Screenshot-2023-08-20-115358.png](https://i.postimg.cc/C11FypYb/Screenshot-2023-08-20-115358.png)](https://postimg.cc/yJMq95DN)
 
-# Author & Credits
+## Author & Credits
 
 Created by William Pan. 
 
