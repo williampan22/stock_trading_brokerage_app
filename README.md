@@ -58,3 +58,16 @@ I created an imitation of a stock brokerage app where users can trade stocks and
 To access the project, clone the repository and then get a TwelveData API KEY to get stock data at https://twelvedata.com/. Also make your own random SECRET KEY for configuring Flask Session. Python, Flask, and multiple libraries must also be installed on your computer. 
 
 [![Screenshot-2023-08-20-115208.png](https://i.postimg.cc/zDFk2mvx/Screenshot-2023-08-20-115208.png)](https://postimg.cc/mhhMh5Q9)
+
+# SQL Database Structure 
+
+[![Screenshot-2023-08-20-115435.png](https://i.postimg.cc/pT6PRcX4/Screenshot-2023-08-20-115435.png)](https://postimg.cc/0MDTCfS0)
+
+# Project Filesystem
+
+[![Screenshot-2023-08-20-115358.png](https://i.postimg.cc/C11FypYb/Screenshot-2023-08-20-115358.png)](https://postimg.cc/yJMq95DN)
+
+# Author & Credits
+
+Created by William Pan. 
+
