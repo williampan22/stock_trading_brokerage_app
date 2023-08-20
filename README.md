@@ -29,7 +29,11 @@ I created an imitation of a stock brokerage app where users can trade stocks and
 
 * **Quote Stock**: Quote a stock. Must input a valid stock ticker. Upon quoting, show stock quote information (name, symbol, exchange, open, high, low, close, etc) and price stock chart. Error message is presented if the stock ticker is not valid.
 
+Enter Stock Ticker
+
 [![Screenshot-2023-08-20-112808.png](https://i.postimg.cc/c4pTYkYM/Screenshot-2023-08-20-112808.png)](https://postimg.cc/ZCLrzcwC)
+
+Upon Valid Stock Ticker, Show Quoted Stock Data & Stock Chart
 [![Screenshot-2023-08-20-112910.png](https://i.postimg.cc/YqGbvB4C/Screenshot-2023-08-20-112910.png)](https://postimg.cc/JG8bFgcf)
 [![Screenshot-2023-08-20-112920.png](https://i.postimg.cc/VsHKskkh/Screenshot-2023-08-20-112920.png)](https://postimg.cc/pyzfqx8Q)
 
