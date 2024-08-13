@@ -2,12 +2,12 @@
 
 ## Technologies Used
 * Python, Javascript, HTML, Bootstrap CSS
-* Flask (web framework for Python)
+* Flask 
 * Flask Session - Managing Users Login Session (redirects user to login/register page if not logged in)
-* SQL Database (SQLAlchemy Library) - Stores User Data, Trade History, Portfolio
+* SQL Database - Stores User Data, Trade History, Portfolio
 * TwelveData Stock API - Fetches Stock Price & Quotes Data
-* Git, Github
-* Matplotlit, Pandas, Datetime, Werkzeug Security
+* Git, Github 
+* Matplotlit, Pandas, Datetime, bcrypt (for hashing passwords)
 
 ## Description
 I created an imitation of a stock brokerage app where users can trade stocks and manage their portfolio. There are the following pages and respective actions: 
@@ -90,7 +90,7 @@ To access the project, clone the repository and then get a TwelveData API KEY to
 
 ## Security 
 
-Password hashing with Werkzeug Security is used before storing passwords in the SQL Database. 
+Password hashing with bcrypt is used before storing passwords in the SQL Database. 
 
 ## Project Filesystem
 
